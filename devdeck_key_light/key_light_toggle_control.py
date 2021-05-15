@@ -30,8 +30,8 @@ class KeyLightToggleControl(DeckControl):
             requests.put(
                 'http://{}:9123/elgato/lights'.format(self.settings['host']),
                 json=data)
-        except requests.exceptions.ConnectionError as e:
-            self.__logger.warning("Error communicating with Elgato Key Light: %s", str(e))
+        except requests.exceptions.ConnectionError as ex:
+            self.__logger.warning("Error communicating with Elgato Key Light: %s", str(ex))
         self.__render_icon()
 
 
@@ -46,8 +46,8 @@ class KeyLightToggleControl(DeckControl):
                 else:
                     with context.renderer() as r:
                         r.image(os.path.join(os.path.dirname(__file__), "assets", 'key-light-off.png')).end()
-        except requests.exceptions.ConnectionError:
-            self.__logger.warning("Error communicating with Elgato Key Light: %s", str(e))
+        except requests.exceptions.ConnectionError as ex:
+            self.__logger.warning("Error communicating with Elgato Key Light: %s", str(ex))
             with self.deck_context() as context:
                 with context.renderer() as r:
                     r \
