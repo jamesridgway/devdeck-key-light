@@ -21,11 +21,11 @@ You can then update your DevDeck configuration to use decks and controls from th
 Example configuration:
 
     decks:
-      - serial_number: "ABC123"
-        name: 'devdeck.decks.single_page_deck_controller.SinglePageDeckController'
+      - serial_number: ABC123
+        name: devdeck.decks.single_page_deck_controller.SinglePageDeckController
         settings:
           controls:
-            - name: 'devdeck_key_light.key_light_toggle_control.KeyLightToggleControl'
+            - name: devdeck_key_light.key_light_toggle_control.KeyLightToggleControl
               key: 0
               settings:
-                host: '192.168.1.23'
+                host: 192.168.1.23
