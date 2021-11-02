@@ -1,7 +1,7 @@
 # DevDeck - Key Light
 ![CI](https://github.com/jamesridgway/devdeck-key-light/workflows/CI/badge.svg?branch=main)
 
-Elgaato Key Light controls for [DevDeck](https://github.com/jamesridgway/devdeck).
+Elgato Key Light controls for [DevDeck](https://github.com/jamesridgway/devdeck).
 
 ## Installing
 Simplify install *DevDeck - Key Light* into the same python environment that you have installed DevDeck.
