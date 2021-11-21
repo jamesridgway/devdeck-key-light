@@ -12,9 +12,17 @@ You can then update your DevDeck configuration to use decks and controls from th
 
 ## Controls
 
-* `KeylightToggleControl`
+* `key_light_toggle_control.KeylightToggleControl`
 
-   Can be used to toggle the state of an Elgato Key Light
+   Can be used to toggle the state of an Elgato Key Light.
+
+* `brightness.Increase`
+
+   Can be use to increase light brightness by a static amount.
+
+* `brightness.Decrease`
+
+   Can be use to decrease light brightness by a static amount.
 
 ## Configuration
 
@@ -29,3 +37,13 @@ Example configuration:
               key: 0
               settings:
                 host: 192.168.1.23
+            - name: devdeck_key_light.brightness.Increase
+              key: 1
+              settings:
+                host: 192.168.1.23
+                step: 20
+            - name: devdeck_key_light.brightness.Decrease
+              key: 1
+              settings:
+                host: 192.168.1.23
+                step: 20

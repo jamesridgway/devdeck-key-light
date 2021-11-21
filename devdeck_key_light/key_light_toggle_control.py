@@ -42,10 +42,10 @@ class KeyLightToggleControl(DeckControl):
             with self.deck_context() as context:
                 if data['lights'][0]['on'] == 1:
                     with context.renderer() as r:
-                        r.image(os.path.join(os.path.dirname(__file__), "assets", 'key-light-on.png')).end()
+                        r.image(os.path.join(os.path.dirname(__file__), "assets", 'lightbulb-filled.png')).end()
                 else:
                     with context.renderer() as r:
-                        r.image(os.path.join(os.path.dirname(__file__), "assets", 'key-light-off.png')).end()
+                        r.image(os.path.join(os.path.dirname(__file__), "assets", 'lightbulb-outlined.png')).end()
         except requests.exceptions.ConnectionError as ex:
             self.__logger.warning("Error communicating with Elgato Key Light: %s", str(ex))
             with self.deck_context() as context:
