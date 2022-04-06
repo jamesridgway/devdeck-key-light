@@ -70,7 +70,7 @@ class KeyLightToggleControl(DeckControl):
                 'type': 'string',
                 'required': True
             }
-            'lightOnIcon' {
+            'lightOnIcon': {
                 'type': 'string',
                 'required': True 
             }
