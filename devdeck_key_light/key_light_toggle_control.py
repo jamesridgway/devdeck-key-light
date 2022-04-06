@@ -2,14 +2,19 @@ import logging
 import os
 import requests
 
+from xdg.BaseDirectory import *
+
 from devdeck_core.controls.deck_control import DeckControl
 
+defaultIconPath = os.path.join(xdg_config_dirs[0], 'devdeck/assets')
 
 class KeyLightToggleControl(DeckControl):
     def __init__(self, key_no, **kwargs):
         self.elgato = None
         self.__logger = logging.getLogger('devdeck')
         super().__init__(key_no, **kwargs)
+    
+        self.iconPath = self.settings['iconPath'] or defaultIconPath
 
     def initialize(self):
         self.__render_icon()
@@ -42,10 +47,10 @@ class KeyLightToggleControl(DeckControl):
             with self.deck_context() as context:
                 if data['lights'][0]['on'] == 1:
                     with context.renderer() as r:
-                        r.image(os.path.join(os.path.dirname(__file__), "assets", 'key-light-on.png')).end()
+                        r.image(os.path.join(self.iconPath, self.settings['lightOnIcon'])).end()
                 else:
                     with context.renderer() as r:
-                        r.image(os.path.join(os.path.dirname(__file__), "assets", 'key-light-off.png')).end()
+                        r.image(os.path.join(self.iconPath, self.settings['lightOffIcon'])).end()
         except requests.exceptions.ConnectionError as ex:
             self.__logger.warning("Error communicating with Elgato Key Light: %s", str(ex))
             with self.deck_context() as context:
@@ -59,3 +64,22 @@ class KeyLightToggleControl(DeckControl):
                         .text_align('center') \
                         .end()
 
+    def settings_schema(self):
+        return {
+            'host': {
+                'type': 'string',
+                'required': True
+            }
+            'lightOnIcon' {
+                'type': 'string',
+                'required': True 
+            }
+            'ligtOffIcon': {
+                'type': 'string',
+                'required': True
+            }
+            'iconPath': {
+                'type': 'string',
+                'required': False
+            }
+        }
