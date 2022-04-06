@@ -1,6 +1,8 @@
 import logging
 import os
 import requests
+import time
+import threading
 
 from devdeck_core.controls.deck_control import DeckControl
 
@@ -12,8 +14,10 @@ class KeyLightToggleControl(DeckControl):
         super().__init__(key_no, **kwargs)
 
     def initialize(self):
-        self.__render_icon()
 
+        self.watcherThread = threading.Thread(target=self.watcher)
+        self.watcherThread.start()
+        
     def pressed(self):
         try:
             r = requests.get('http://{}:9123/elgato/lights'.format(self.settings['host']))
@@ -32,24 +36,33 @@ class KeyLightToggleControl(DeckControl):
                 json=data)
         except requests.exceptions.ConnectionError as ex:
             self.__logger.warning("Error communicating with Elgato Key Light: %s", str(ex))
-        self.__render_icon()
+    
+    def watcher(self):
+        self.state = None
 
+        while True:
+            try:
+                r = requests.get('http://{}:9123/elgato/lights'.format(self.settings['host']))
+                data = r.json()
 
-    def __render_icon(self):
-        try:
-            r = requests.get('http://{}:9123/elgato/lights'.format(self.settings['host']))
-            data = r.json()
-            with self.deck_context() as context:
-                if data['lights'][0]['on'] == 1:
-                    with context.renderer() as r:
-                        r.image(os.path.join(os.path.dirname(__file__), "assets", 'key-light-on.png')).end()
-                else:
-                    with context.renderer() as r:
-                        r.image(os.path.join(os.path.dirname(__file__), "assets", 'key-light-off.png')).end()
-        except requests.exceptions.ConnectionError as ex:
-            self.__logger.warning("Error communicating with Elgato Key Light: %s", str(ex))
-            with self.deck_context() as context:
-                with context.renderer() as r:
+                with self.deck_context() as context:
+                    if self.state != data['lights'][0]['on']:
+                        self.state = data['lights'][0]['on']
+            except requests.exceptions.ConnectionError as ex:
+                self.__logger.warning("Error communicating with ELgato Key Light: %s", str(ex))
+                self.state = 9
+            
+            self.render_icon(self.state)
+            time.sleep(0.5)
+        self.__logger.error("We should never exit the thread - oops!")
+        exit(1)
+
+    def render_icon(self, state):
+        self.state = state
+
+        with self.deck_context() as context:
+            with context.renderer() as r:
+                if self.state == 9:
                     r \
                         .text('KEY LIGHT \nNOT FOUND') \
                         .color('red') \
@@ -58,4 +71,9 @@ class KeyLightToggleControl(DeckControl):
                         .font_size(85) \
                         .text_align('center') \
                         .end()
+                elif self.state == 1:
+                    r.image(os.path.join(os.path.dirname(__file__), "assets", 'key-light-on.png')).end()
+                else:
+                    r.image(os.path.join(os.path.dirname(__file__), "assets", 'key-light-off.png')).end()
+
 
